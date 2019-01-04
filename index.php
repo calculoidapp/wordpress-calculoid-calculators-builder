@@ -146,12 +146,35 @@
 
 			$for_prefill = '';
 			foreach($atts as $key => $val) {
-				if($key != 'id' && $key != 'title' && $key != 'description') {
-					//echo '<p>' . $key . ': ' . $val . '</p>';	
-					if($for_prefill != '') {
-						$for_prefill .= ",";
+
+				//if billing then skip
+				if (strpos($key, 'billing_') !== false) {
+
+				} else {
+					if($key != 'id' && $key != 'title' && $key != 'description') {
+						//echo '<p>' . $key . ': ' . $val . '</p>';	
+						if($for_prefill != '') {
+							$for_prefill .= ",";
+						}
+						$for_prefill .= strtoupper($key) . ":'" . $val . "'";
 					}
-					$for_prefill .= strtoupper($key) . ":'" . $val . "'";
+				}
+				
+			}
+
+			$for_billing = '';
+
+			foreach($atts as $key => $val) {
+
+				//if billing then skip
+				if (strpos($key, 'billing_') !== false) {
+					if($key != 'id' && $key != 'title' && $key != 'description') {
+						//echo '<p>' . $key . ': ' . $val . '</p>';	
+						if($for_billing != '') {
+							$for_billing .= ",";
+						}
+						$for_billing .= str_replace('billing_','',$key) . ":'" . $val . "'";
+					}
 				}
 				
 			}
@@ -164,7 +187,7 @@
 						<link rel="stylesheet" href="https://embed.calculoid.com/styles/main.css" />
 						<script type="text/javascript" src="https://embed.calculoid.com/scripts/combined.min.js"></script>
 					<?php endif; ?>
-					<div ng-app="calculoid" ng-controller="CalculoidMainCtrl" ng-init="init({calcId:<?php _e($id) ?>,apiKey:'<?php _e($apikey) ?>',values:{<?php echo $for_prefill; ?>},showTitle:<?php _e($show_title) ?>,showDescription:<?php _e($show_description) ?>})" ng-include="load()"></div>					
+					<div ng-app="calculoid" ng-controller="CalculoidMainCtrl" ng-init="init({calcId:<?php _e($id) ?>,apiKey:'<?php _e($apikey) ?>',values:{<?php echo $for_prefill; ?>, billing:{<?php echo $for_billing; ?>}},showTitle:<?php _e($show_title) ?>,showDescription:<?php _e($show_description) ?>})" ng-include="load()"></div>					
 				<?php
 				$content = ob_get_clean();
 				$this->calculoid_counter++;
